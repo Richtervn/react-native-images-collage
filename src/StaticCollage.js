@@ -13,16 +13,26 @@ class StaticCollage extends React.Component {
       const startIndex = m ? array.slice(0, m).reduce(reducer) : 0;
 
       const images = this.props.images.slice(startIndex, startIndex + element).map((image, i) => {
-        if(!onPhotoPress || !onPhotoPressIn || !onPhotoPressOut) {
+        if(!onPhotoPress && !onPhotoPressIn && !onPhotoPressOut) {
           return <Image key={i} source={{ uri: image }} style={[ { flex: 1 }, imageStyle ]} />
         }
 
-        return (
+      const touchProps = {};
+      if (onPhotoPress) {
+        touchProps.onPress = () => onPhotoPress({ uri: image, index: i })
+      }
+      if (onPhotoPressIn) {
+        touchProps.onPressIn = () => onPhotoPressIn({ uri: image, index: i })
+      }
+      if (onPhotoPressOut) {
+        touchProps.onPhotoPressOut = () => onPhotoPressOut({ uri: image, index: i })
+      }
+
+      return (
           <TouchableOpacity
-            key={i} 
-            onPress={() => onPhotoPress({ uri: image, index: i })} 
-            onPressIn={() => onPhotoPressIn({ uri: image, index: i })} 
-            onPressOut={() => onPhotoPressOut({ uri: image, index: i })}>
+            key={i}
+            {...touchProps} 
+            style={{flex: 1}}>
             <Image source={{ uri: image }} style={[ { flex: 1 }, imageStyle ]} />
           </TouchableOpacity>
         );
